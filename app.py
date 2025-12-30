@@ -4,6 +4,7 @@ import sys
 from typing import Any, Dict, List, Tuple
 from urllib.parse import urlparse
 
+from authlib.integrations.base_client.errors import MismatchingStateError
 from authlib.integrations.flask_client import OAuth
 from flask import Flask, abort, redirect, render_template, request, session, url_for
 
@@ -76,6 +77,20 @@ def build_redirect_uri() -> str:
             return f"{settings.app_url.rstrip('/')}{candidate}"
 
     return url_for("auth_callback", _external=True)
+
+
+@app.before_request
+def enforce_canonical_host():
+    if not is_absolute_url(settings.app_url):
+        return None
+    expected_host = urlparse(settings.app_url).netloc
+    if not expected_host or request.host == expected_host:
+        return None
+    path = request.path
+    if request.query_string:
+        path = f"{path}?{request.query_string.decode('utf-8')}"
+    target = settings.app_url.rstrip("/") + path
+    return redirect(target, code=302)
 
 
 def admin_required(func):
@@ -201,7 +216,21 @@ def login():
 
 @app.route("/login/azure/callback")
 def auth_callback():
-    token = oauth.azure.authorize_access_token()
+    try:
+        token = oauth.azure.authorize_access_token()
+    except MismatchingStateError:
+        session.clear()
+        return (
+            render_template(
+                "admin_denied.html",
+                title="Sesion expirada",
+                message=(
+                    "La sesion de inicio de sesion expiro o se abrio con otra URL. "
+                    "Vuelve a intentar desde la URL principal."
+                ),
+            ),
+            400,
+        )
     user = token.get("userinfo") or {}
     if not user:
         return (

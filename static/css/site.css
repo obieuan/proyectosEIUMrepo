@@ -81,7 +81,7 @@ img {
 }
 
 .brand-logo {
-    height: 36px;
+    height: clamp(64px, 8vw, 88px);
     width: auto;
 }
 
@@ -165,6 +165,14 @@ img {
     flex-wrap: wrap;
 }
 
+.hero-copy-centered {
+    text-align: center;
+}
+
+.hero-copy-centered .hero-actions {
+    justify-content: center;
+}
+
 .hero-panel {
     position: relative;
     background: var(--card);
@@ -186,6 +194,29 @@ img {
 .stats {
     display: grid;
     gap: 1.5rem;
+}
+
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    background: var(--bg-alt);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--stroke);
+    box-shadow: 0 12px 26px rgba(5, 33, 71, 0.08);
+}
+
+.stat-card .stat-number {
+    font-size: 1.8rem;
+}
+
+.stat-card .stat-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
 }
 
 .stat-number {
@@ -783,6 +814,9 @@ img {
 .admin-admin-list {
     display: grid;
     gap: 0.75rem;
+    max-height: 520px;
+    overflow-y: auto;
+    padding-right: 0.35rem;
 }
 
 .admin-search-item,
@@ -930,6 +964,9 @@ img {
         overflow: visible;
     }
     .project-layout {
+        grid-template-columns: 1fr;
+    }
+    .stats-cards {
         grid-template-columns: 1fr;
     }
 }

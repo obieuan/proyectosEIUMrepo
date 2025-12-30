@@ -1,11 +1,11 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Archivo Historico de Proyectos{% endblock %}
 
 {% block content %}
 <section class="hero">
     <div class="container hero-grid">
-        <div class="hero-copy reveal">
+        <div class="hero-copy hero-copy-centered reveal">
             <p class="hero-kicker">Archivo vivo academico</p>
             <h1>Innovacion estudiantil, preservada y abierta para todos.</h1>
             <p class="hero-text">
@@ -18,17 +18,17 @@
             </div>
         </div>
         <div class="hero-panel reveal">
-            <div class="stats">
-                <div class="stat">
-                    <span class="stat-number">{{ stats.total }}</span>
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <span class="stat-number">+{{ stats.total }}</span>
                     <span class="stat-label">Proyectos</span>
                 </div>
-                <div class="stat">
+                <div class="stat-card">
                     <span class="stat-number">{{ stats.categories }}</span>
                     <span class="stat-label">Categorias</span>
                 </div>
-                <div class="stat">
-                    <span class="stat-number">{{ stats.students }}</span>
+                <div class="stat-card">
+                    <span class="stat-number">+{{ stats.students }}</span>
                     <span class="stat-label">Estudiantes</span>
                 </div>
             </div>
@@ -45,8 +45,8 @@
                 <h2>Proyectos destacados del mes</h2>
             </div>
             <div class="carousel-controls">
-                <button class="carousel-btn carousel-prev" aria-label="Anterior">←</button>
-                <button class="carousel-btn carousel-next" aria-label="Siguiente">→</button>
+                <button class="carousel-btn carousel-prev" aria-label="Anterior">&larr;</button>
+                <button class="carousel-btn carousel-next" aria-label="Siguiente">&rarr;</button>
             </div>
         </div>
         <div class="featured-grid" id="featured-carousel">
