@@ -7,7 +7,13 @@ from urllib.parse import urlparse
 from authlib.integrations.flask_client import OAuth
 from flask import Flask, abort, redirect, render_template, request, session, url_for
 
-from api_client import fetch_catalogs, fetch_projects, fetch_stats, find_project_by_id
+from api_client import (
+    fetch_catalogs,
+    fetch_projects,
+    fetch_projects_by_ids,
+    fetch_stats,
+    find_project_by_id,
+)
 from config import load_settings
 from store import (
     add_admin,
@@ -315,12 +321,15 @@ def extract_email(user: Dict[str, Any]) -> str:
 
 def load_featured_projects(featured_ids: List[int] = None) -> List[Dict[str, Any]]:
     ids = featured_ids or list_featured_ids()
-    projects = []
-    for project_id in ids:
-        project, _ = find_project_by_id(settings, project_id)
-        if project:
-            projects.append(project)
-    return projects
+    if not ids:
+        return []
+    try:
+        data = fetch_projects_by_ids(settings, ids)
+    except Exception:
+        return []
+    projects = data.get("Datos", [])
+    projects_by_id = {project.get("Id"): project for project in projects}
+    return [projects_by_id[project_id] for project_id in ids if project_id in projects_by_id]
 
 
 def safe_fetch_projects(
