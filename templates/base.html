@@ -1,0 +1,40 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Archivo de Proyectos{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
+</head>
+<body>
+    {% include 'components/navbar.html' %}
+
+    <main class="site-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <p class="footer-title">Archivo Historico de Proyectos</p>
+                    <p class="footer-text">Universidad Modelo - Memoria academica viva.</p>
+                </div>
+                <div class="footer-meta">
+                    <p class="footer-label">Contacto</p>
+                    <p class="footer-text">proyectos@modelo.edu.mx</p>
+                </div>
+                <div class="footer-meta footer-admin">
+                    <p class="footer-label">Administracion</p>
+                    <a class="footer-text footer-link" href="/admin">Acceso discreto</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

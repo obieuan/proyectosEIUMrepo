@@ -1,0 +1,84 @@
+﻿<form class="filters" action="/explorar" method="get">
+    <div class="filter-group">
+        <label for="texto">Busqueda</label>
+        <input id="texto" name="texto" type="text" value="{{ request.args.get('texto', '') }}" placeholder="Nombre o palabra clave">
+    </div>
+
+    <details class="filter-section" open>
+        <summary>Carrera</summary>
+        <div class="filter-options">
+            {% for option in options.get('carrera', []) %}
+                <label class="filter-option">
+                    <input type="checkbox" name="carrera" value="{{ option.value }}" {% if option.value in request.args.getlist('carrera') %}checked{% endif %}>
+                    <span>{{ option.label }}</span>
+                    <span class="filter-count">{{ option.total }}</span>
+                </label>
+            {% else %}
+                <span class="empty-state">Sin opciones</span>
+            {% endfor %}
+        </div>
+    </details>
+
+    <details class="filter-section">
+        <summary>Categoria</summary>
+        <div class="filter-options">
+            {% for option in options.get('categoria', []) %}
+                <label class="filter-option">
+                    <input type="checkbox" name="categoria" value="{{ option.value }}" {% if option.value in request.args.getlist('categoria') %}checked{% endif %}>
+                    <span>{{ option.label }}</span>
+                    <span class="filter-count">{{ option.total }}</span>
+                </label>
+            {% else %}
+                <span class="empty-state">Sin opciones</span>
+            {% endfor %}
+        </div>
+    </details>
+
+    <details class="filter-section">
+        <summary>Ano</summary>
+        <div class="filter-options">
+            {% for option in options.get('ano', []) %}
+                <label class="filter-option">
+                    <input type="checkbox" name="ano" value="{{ option.value }}" {% if option.value in request.args.getlist('ano') %}checked{% endif %}>
+                    <span>{{ option.label }}</span>
+                    <span class="filter-count">{{ option.total }}</span>
+                </label>
+            {% else %}
+                <span class="empty-state">Sin opciones</span>
+            {% endfor %}
+        </div>
+    </details>
+
+    <details class="filter-section">
+        <summary>Modalidad</summary>
+        <div class="filter-options">
+            {% for option in options.get('modalidad', []) %}
+                <label class="filter-option">
+                    <input type="checkbox" name="modalidad" value="{{ option.value }}" {% if option.value in request.args.getlist('modalidad') %}checked{% endif %}>
+                    <span>{{ option.label }}</span>
+                    <span class="filter-count">{{ option.total }}</span>
+                </label>
+            {% else %}
+                <span class="empty-state">Sin opciones</span>
+            {% endfor %}
+        </div>
+    </details>
+
+    <details class="filter-section">
+        <summary>Evento</summary>
+        <div class="filter-options">
+            {% for option in options.get('evento', []) %}
+                <label class="filter-option">
+                    <input type="checkbox" name="evento" value="{{ option.value }}" {% if option.value in request.args.getlist('evento') %}checked{% endif %}>
+                    <span>{{ option.label }}</span>
+                    <span class="filter-count">{{ option.total }}</span>
+                </label>
+            {% else %}
+                <span class="empty-state">Sin opciones</span>
+            {% endfor %}
+        </div>
+    </details>
+
+    <button type="submit" class="filter-button">Aplicar filtros</button>
+    <a class="filter-reset" href="/explorar">Limpiar</a>
+</form>

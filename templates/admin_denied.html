@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title or "Acceso denegado" }}{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container admin-denied">
+        <h2>{{ title or "Acceso restringido" }}</h2>
+        <p class="admin-subtitle">
+            {{ message or "Tu cuenta no tiene permisos para administrar el archivo de proyectos." }}
+        </p>
+        <div class="admin-actions">
+            <a class="btn btn-primary" href="/">Volver al inicio</a>
+            <a class="btn btn-ghost" href="/logout">Cerrar sesion</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

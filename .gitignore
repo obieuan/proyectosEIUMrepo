@@ -1,0 +1,9 @@
+﻿.venv/
+__pycache__/
+.env
+.env.*
+!.env.example
+*.pyc
+data/
+loclx.exe
+tools/run_tunnel.py

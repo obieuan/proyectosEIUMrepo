@@ -1,0 +1,80 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Archivo Historico de Proyectos{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero-grid">
+        <div class="hero-copy reveal">
+            <p class="hero-kicker">Archivo vivo academico</p>
+            <h1>Innovacion estudiantil, preservada y abierta para todos.</h1>
+            <p class="hero-text">
+                Un museo digital interactivo que celebra los proyectos con impacto.
+                Explora por carrera, categoria y ciclo escolar.
+            </p>
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="/explorar">Explorar proyectos</a>
+                <a class="btn btn-ghost" href="#recientes">Ver recientes</a>
+            </div>
+        </div>
+        <div class="hero-panel reveal">
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-number">{{ stats.total }}</span>
+                    <span class="stat-label">Proyectos</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">{{ stats.categories }}</span>
+                    <span class="stat-label">Categorias</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">{{ stats.students }}</span>
+                    <span class="stat-label">Estudiantes</span>
+                </div>
+            </div>
+            <div class="hero-gradient"></div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <p class="section-kicker">Coleccion destacada</p>
+                <h2>Proyectos destacados del mes</h2>
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-btn carousel-prev" aria-label="Anterior">←</button>
+                <button class="carousel-btn carousel-next" aria-label="Siguiente">→</button>
+            </div>
+        </div>
+        <div class="featured-grid" id="featured-carousel">
+            {% for project in featured %}
+                {% include 'components/project_card.html' %}
+            {% else %}
+                <p class="empty-state">No hay proyectos destacados aun.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="recientes" class="section">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <p class="section-kicker">Recientes</p>
+                <h2>Explora los proyectos mas recientes</h2>
+            </div>
+            <a class="link" href="/explorar">Ver todos los proyectos</a>
+        </div>
+        <div class="masonry">
+            {% for project in projects %}
+                {% include 'components/project_card.html' %}
+            {% else %}
+                <p class="empty-state">No hay proyectos para mostrar.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

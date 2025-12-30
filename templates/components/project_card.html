@@ -1,0 +1,19 @@
+﻿<article class="project-card reveal">
+    <a href="/proyecto/{{ project.Id }}" class="project-link">
+        <div class="project-media">
+            {% if project.PortadaIMG %}
+                <img src="{{ project.PortadaIMG }}" alt="{{ project.Nombre }}">
+            {% else %}
+                <div class="project-placeholder"></div>
+            {% endif %}
+            <div class="project-overlay">
+                <span class="project-meta">{{ project.Carrera }} | {{ project.CicloEscolarAno }}</span>
+                <h3>{{ project.Nombre }}</h3>
+            </div>
+        </div>
+        <div class="project-body">
+            <p class="project-desc">{{ project.Descripcion }}</p>
+            <span class="project-tag">{{ project.Categoria.Nombre }}</span>
+        </div>
+    </a>
+</article>

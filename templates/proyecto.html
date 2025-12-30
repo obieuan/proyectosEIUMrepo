@@ -1,0 +1,99 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}{{ project.Nombre }} - Archivo de Proyectos{% endblock %}
+
+{% block content %}
+<section class="project-hero">
+    {% if project.PortadaIMG %}
+        <img src="{{ project.PortadaIMG }}" alt="{{ project.Nombre }}">
+    {% else %}
+        <div class="project-placeholder"></div>
+    {% endif %}
+</section>
+
+<section class="section">
+    <div class="container project-layout">
+        <div class="project-main reveal">
+            <p class="section-kicker">{{ project.Categoria.Nombre }}</p>
+            <h1>{{ project.Nombre }}</h1>
+            <p class="project-summary">{{ project.Descripcion }}</p>
+
+            <div class="project-actions">
+                {% if project.DocumentoPDF %}
+                    <a class="btn btn-primary" href="{{ project.DocumentoPDF }}" target="_blank" rel="noopener">Descargar PDF</a>
+                {% endif %}
+                <a class="btn btn-ghost" href="/explorar">Volver a explorar</a>
+            </div>
+
+            <div class="project-section">
+                <h2>Descripcion completa</h2>
+                <p>{{ project.Descripcion }}</p>
+            </div>
+        </div>
+
+        <aside class="project-meta-panel reveal">
+            <div class="meta-card">
+                <h3>Ficha tecnica</h3>
+                <ul>
+                    <li><span>Carrera</span><strong>{{ project.Carrera }}</strong></li>
+                    <li><span>Semestre</span><strong>{{ project.Semestre }}</strong></li>
+                    <li><span>Grupo</span><strong>{{ project.Grupo }}</strong></li>
+                    <li><span>Ciclo</span><strong>{{ project.CicloEscolarAno }}</strong></li>
+                    <li><span>Evento</span><strong>{{ project.Evento.Nombre }}</strong></li>
+                    <li><span>Modalidad</span><strong>{{ project.Modalidad.Nombre }}</strong></li>
+                </ul>
+            </div>
+            <div class="meta-card">
+                <h3>Equipo</h3>
+                <div class="student-list">
+                    {% for student in project.Alumnos %}
+                        <span>{{ student }}</span>
+                    {% else %}
+                        <span>Sin integrantes registrados</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="meta-card">
+                <h3>Compartir</h3>
+                <div class="share-links">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" target="_blank" rel="noopener">Facebook</a>
+                    <a href="https://twitter.com/intent/tweet?url={{ request.url }}" target="_blank" rel="noopener">X</a>
+                    <a href="mailto:?subject=Proyecto&body={{ request.url }}">Email</a>
+                </div>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <p class="section-kicker">Relacionados</p>
+                <h2>Proyectos que podrian interesarte</h2>
+            </div>
+        </div>
+        <div class="carousel">
+            {% for project in related %}
+                <article class="carousel-card reveal">
+                    <a href="/proyecto/{{ project.Id }}">
+                        <div class="carousel-media">
+                            {% if project.PortadaIMG %}
+                                <img src="{{ project.PortadaIMG }}" alt="{{ project.Nombre }}">
+                            {% else %}
+                                <div class="project-placeholder"></div>
+                            {% endif %}
+                        </div>
+                        <div class="carousel-body">
+                            <p class="carousel-meta">{{ project.Evento.Nombre }} | {{ project.Categoria.Nombre }}</p>
+                            <h3>{{ project.Nombre }}</h3>
+                        </div>
+                    </a>
+                </article>
+            {% else %}
+                <p class="empty-state">No hay proyectos relacionados.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin - Destacados{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container admin-layout">
+        <div class="admin-header">
+            <div>
+                <p class="section-kicker">Administracion</p>
+                <h2>Destacados y permisos</h2>
+                <p class="admin-subtitle">Sesion activa: {{ current_user }}</p>
+            </div>
+            <a class="btn btn-ghost" href="/logout">Cerrar sesion</a>
+        </div>
+
+        <div class="admin-grid">
+            <div class="admin-card">
+                <h3>Destacados actuales</h3>
+                <div class="admin-featured-list">
+                    {% for project in featured_projects %}
+                        <div class="admin-featured-item">
+                            <div>
+                                <p class="admin-featured-title">{{ project.Nombre }}</p>
+                                <p class="admin-featured-meta">
+                                    {{ project.Evento.Nombre }} | {{ project.Carrera }} | {{ project.CicloEscolarAno }}
+                                </p>
+                            </div>
+                            <form method="post" action="/admin/featured/remove/{{ project.Id }}">
+                                <button class="btn btn-ghost btn-sm" type="submit">Quitar</button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <p class="empty-state">No hay proyectos destacados aun.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <h3>Agregar proyectos destacados</h3>
+                <form class="admin-search" method="get" action="/admin">
+                    <input type="text" name="q" value="{{ search_query }}" placeholder="Buscar por nombre">
+                    <button class="btn btn-primary btn-sm" type="submit">Buscar</button>
+                </form>
+
+                <form method="post" action="/admin/featured/add">
+                    <div class="admin-search-results">
+                        {% for project in search_projects %}
+                            <label class="admin-search-item">
+                                <input
+                                    type="checkbox"
+                                    name="project_id"
+                                    value="{{ project.Id }}"
+                                    {% if project.Id in featured_ids %}checked disabled{% endif %}
+                                >
+                                <div>
+                                    <p class="admin-featured-title">{{ project.Nombre }}</p>
+                                    <p class="admin-featured-meta">
+                                        {{ project.Evento.Nombre }} | {{ project.Carrera }}
+                                    </p>
+                                </div>
+                                <span class="admin-badge">#{{ project.Id }}</span>
+                            </label>
+                        {% else %}
+                            <p class="empty-state">Sin resultados para esa busqueda.</p>
+                        {% endfor %}
+                    </div>
+                    {% if search_projects %}
+                        <div class="admin-actions">
+                            <button class="btn btn-primary" type="submit">Agregar seleccionados</button>
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        {% if is_super_admin %}
+            <div class="admin-card admin-admins">
+                <h3>Administradores</h3>
+                <form class="admin-add" method="post" action="/admin/admins/add">
+                    <input type="email" name="email" placeholder="correo@modelo.edu.mx" required>
+                    <button class="btn btn-primary btn-sm" type="submit">Agregar</button>
+                </form>
+                <div class="admin-admin-list">
+                    {% for admin in admins %}
+                        <div class="admin-admin-item">
+                            <div>
+                                <p class="admin-featured-title">{{ admin }}</p>
+                                {% if admin == super_admin_email %}
+                                    <p class="admin-featured-meta">Super admin</p>
+                                {% endif %}
+                            </div>
+                            {% if admin != super_admin_email %}
+                                <form method="post" action="/admin/admins/remove">
+                                    <input type="hidden" name="email" value="{{ admin }}">
+                                    <button class="btn btn-ghost btn-sm" type="submit">Eliminar</button>
+                                </form>
+                            {% else %}
+                                <span class="admin-badge">Principal</span>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p class="empty-state">No hay administradores registrados.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

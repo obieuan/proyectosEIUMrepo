@@ -1,0 +1,49 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Explorar Proyectos{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container explore-grid">
+        <aside class="filters-panel reveal">
+            <h2>Filtrar proyectos</h2>
+            {% include 'components/filters.html' %}
+        </aside>
+        <div class="explore-results">
+            <div class="results-head">
+                <div>
+                    <p class="section-kicker">Resultados</p>
+                    <h2>{{ total }} proyectos</h2>
+                </div>
+                <div class="result-meta">Pagina {{ page }}</div>
+            </div>
+
+            {% if active_filters %}
+                <div class="active-filters">
+                    {% for chip in active_filters %}
+                        <a class="filter-chip" href="{{ chip.remove_url }}">{{ chip.label }} <span>×</span></a>
+                    {% endfor %}
+                    <a class="filter-clear" href="/explorar">Limpiar todo</a>
+                </div>
+            {% endif %}
+
+            <div class="masonry">
+                {% for project in projects %}
+                    {% include 'components/project_card.html' %}
+                {% else %}
+                    <p class="empty-state">No hay proyectos para esos filtros.</p>
+                {% endfor %}
+            </div>
+
+            <div class="pagination">
+                {% if prev_url %}
+                    <a class="btn btn-ghost" href="{{ prev_url }}">Anterior</a>
+                {% endif %}
+                {% if next_url %}
+                    <a class="btn btn-primary" href="{{ next_url }}">Siguiente</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
