@@ -68,12 +68,28 @@
             </div>
             <a class="link" href="/explorar">Ver todos los proyectos</a>
         </div>
-        <div class="masonry">
-            {% for project in projects %}
-                {% include 'components/project_card.html' %}
-            {% else %}
-                <p class="empty-state">No hay proyectos para mostrar.</p>
-            {% endfor %}
+        <div class="recent-layout">
+            <div class="recent-grid" id="recent-grid">
+                {% include 'components/recent_grid.html' %}
+            </div>
+            <aside class="category-sidebar">
+                <p class="category-kicker">Categorias</p>
+                <div class="category-list">
+                    <a class="category-chip category-chip-all{% if not active_category %} is-active{% endif %}" href="{{ url_for('index') }}">
+                        <span class="category-name">Todas</span>
+                        <span class="category-count">{{ stats.total }}</span>
+                    </a>
+                    {% for category in categories %}
+                        {% set category_value = category.value or category.label %}
+                        <a class="category-chip{% if active_category == category_value %} is-active{% endif %}" href="{{ url_for('index', categoria=category_value) }}">
+                            <span class="category-name">{{ category.label }}</span>
+                            <span class="category-count">{{ category.total }}</span>
+                        </a>
+                    {% else %}
+                        <p class="empty-state">Sin categorias para mostrar.</p>
+                    {% endfor %}
+                </div>
+            </aside>
         </div>
     </div>
 </section>

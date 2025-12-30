@@ -1,0 +1,5 @@
+{% for project in projects %}
+    {% include 'components/project_card.html' %}
+{% else %}
+    <p class="empty-state">No hay proyectos para mostrar.</p>
+{% endfor %}

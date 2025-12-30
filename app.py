@@ -1,6 +1,7 @@
 ﻿from collections import defaultdict
 from functools import wraps
 import sys
+import time
 from typing import Any, Dict, List, Tuple
 from urllib.parse import urlparse
 
@@ -32,6 +33,8 @@ settings = load_settings()
 app.secret_key = settings.secret_key or "dev-secret"
 
 ALLOWED_DOMAIN = "modelo.edu.mx"
+RECENT_CACHE_TTL = 60
+_recent_cache: Dict[str, Tuple[float, Dict[str, Any]]] = {}
 
 
 oauth = OAuth(app)
@@ -119,18 +122,40 @@ def admin_required(func):
 
 @app.route("/")
 def index():
-    data = safe_fetch_projects(limit=12)
+    active_category = request.args.get("categoria")
+    filters = {}
+    if active_category:
+        filters["Filtro_Categoria"] = active_category
+    data = get_recent_data(filters)
     projects = data.get("Datos", [])
     stats = extract_stats(safe_fetch_stats()) or build_stats(data, projects)
     featured = load_featured_projects()
     if not featured:
         featured = projects[:3]
+    catalog_data = extract_catalogs(safe_fetch_catalogs())
+    categories = catalog_data.get("categoria", []) if catalog_data else []
+    if not categories:
+        fallback = build_filter_options(projects)
+        categories = fallback.get("categoria", [])
     return render_template(
         "index.html",
         projects=projects,
         featured=featured,
         stats=stats,
+        categories=categories,
+        active_category=active_category,
     )
+
+
+@app.get("/recientes")
+def recientes():
+    active_category = request.args.get("categoria")
+    filters = {}
+    if active_category:
+        filters["Filtro_Categoria"] = active_category
+    data = get_recent_data(filters)
+    projects = data.get("Datos", [])
+    return render_template("components/recent_grid.html", projects=projects)
 
 
 @app.route("/explorar")
@@ -359,6 +384,17 @@ def load_featured_projects(featured_ids: List[int] = None) -> List[Dict[str, Any
     projects = data.get("Datos", [])
     projects_by_id = {project.get("Id"): project for project in projects}
     return [projects_by_id[project_id] for project_id in ids if project_id in projects_by_id]
+
+
+def get_recent_data(filters: Dict[str, Any]) -> Dict[str, Any]:
+    key = filters.get("Filtro_Categoria") or "__all__"
+    now = time.time()
+    cached = _recent_cache.get(key)
+    if cached and now - cached[0] < RECENT_CACHE_TTL:
+        return cached[1]
+    data = safe_fetch_projects(filters=filters or None, limit=6)
+    _recent_cache[key] = (now, data)
+    return data
 
 
 def safe_fetch_projects(

@@ -176,8 +176,81 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Recalcular en resize
     let resizeTimer;
-    window.addEventListener('resize', () => {
-        if (resizeTimer) clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(setInitialPosition, 250);
-    });
+window.addEventListener('resize', () => {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(setInitialPosition, 250);
 });
+});
+
+// Dynamic category filter for recent projects
+(() => {
+    const sidebar = document.querySelector(".category-sidebar");
+    const grid = document.getElementById("recent-grid");
+    if (!sidebar || !grid) return;
+
+    const links = Array.from(sidebar.querySelectorAll(".category-chip"));
+    if (!links.length) return;
+
+    const setActive = (href) => {
+        links.forEach((link) => link.classList.remove("is-active"));
+        const target = links.find((link) => link.href === href);
+        if (target) target.classList.add("is-active");
+    };
+
+    const setLoading = (on) => {
+        grid.classList.toggle("is-loading", on);
+        grid.setAttribute("aria-busy", on ? "true" : "false");
+    };
+
+    const renderGrid = (html) => {
+        grid.innerHTML = html;
+        grid.querySelectorAll(".reveal").forEach((item) => {
+            item.classList.add("is-visible");
+        });
+    };
+
+    let controller = null;
+    const fetchRecent = async (url) => {
+        if (controller) controller.abort();
+        controller = new AbortController();
+
+        const params = new URL(url).search;
+        const endpoint = `/recientes${params}`;
+        setLoading(true);
+        try {
+            const response = await fetch(endpoint, {
+                signal: controller.signal,
+                headers: { "X-Requested-With": "fetch" },
+            });
+            if (!response.ok) throw new Error("Request failed");
+            const html = await response.text();
+            renderGrid(html);
+        } catch (err) {
+            if (err.name !== "AbortError") {
+                window.location.assign(url);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const onSelect = (link, push) => {
+        const url = link.href;
+        setActive(url);
+        if (push) window.history.pushState({}, "", url);
+        fetchRecent(url);
+    };
+
+    links.forEach((link) => {
+        link.addEventListener("click", (event) => {
+            event.preventDefault();
+            onSelect(link, true);
+        });
+    });
+
+    window.addEventListener("popstate", () => {
+        const current = window.location.href;
+        const match = links.find((link) => link.href === current);
+        if (match) onSelect(match, false);
+    });
+})();
